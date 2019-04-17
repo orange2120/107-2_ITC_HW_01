@@ -1,0 +1,118 @@
+/*
+Design by Free CSS Templates
+http://www.freecsstemplates.org
+Released for free under a Creative Commons Attribution 2.5 License
+*/
+
+#wrapper
+{
+	overflow: hidden;
+	width: 1000px;
+	margin: 0px auto;
+	background: #FFFFFF;
+	box-shadow: 0px 0px 20px rgba(0,0,0,.3);
+}
+
+.container
+{
+	width: 1000px;
+	margin: 0px auto;
+}
+
+.line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to right, transparent 50%, #223049 50%);
+    background-size: 60px 100%;
+}
+
+/* Page */
+#page {
+	overflow: hidden;
+	width: 950px;
+	margin: 10px auto 10px auto;
+	padding: 10px 10px 0 15px;
+	background: #FFF;
+	border: 1px solid rgba(0,0,0,.05);
+	box-shadow: 0px 0px 0px 10px rgba(0,0,0,0.03);
+	border-radius: 10px;
+}
+
+#page-wrapper
+{
+	overflow: hidden;
+	margin: 0px auto;
+	width: 950px;
+}
+
+
+/* start - table */
+table {
+	border-collapse: collapse;
+	margin: 0px auto;	
+}
+
+th {
+    /*	background: #0093C4;*/
+        background: #3895B8;
+        height: 25px;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: #FFF;
+        border-left: 1px solid #B6D59A;
+        border-bottom: solid 2px #FFF;
+}
+tr {
+	height: 25px;
+}
+tr.row-a {
+	background: #FDFDFD;
+	color:#505050;
+}
+tr.row-b {
+	background: #EFEFEF;
+	color:#101010;
+}
+tr.row-1a {
+	background: #FDFDFD;
+	color:#000;
+}
+tr.row-1b {
+	background: #EFEFEF;
+	color:#000;
+}
+tr.row-2a {
+	background: #FDFDFD;
+	color:#00F;
+}
+tr.row-2b {
+	background: #EFEFEF;
+	color:#00F;
+}
+/* end - table */
+
+/* .button-style	*/
+.button-style
+{
+	display: inline-block;
+	margin-top: 40px;
+	background:#25A6E1;
+	background:-moz-linear-gradient(top, #25A6E1 0%, #188BC0 100%);
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #25A6E1), color-stop(100%, #188BC0));
+	background:-webkit-linear-gradient(top, #25A6E1 0%, #188BC0 100%);
+	background:-o-linear-gradient(top, #25A6E1 0%, #188BC0 100%);
+	background:-ms-linear-gradient(top, #25A6E1 0%, #188BC0 100%);
+	background:linear-gradient(top, #25A6E1 0%, #188BC0 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#25A6E1', endColorstr='#188BC0', GradientType=0);
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius:4px;
+	border:1px solid #1A87B9;
+	color:#fff;
+	width: 120px;
+	height: 40px;
+	line-height: 40px;
+}

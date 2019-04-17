@@ -1,0 +1,7 @@
+./hw2/
+
+.vscode/
+
+#Excutable files
+*.o
+*.h.gch
