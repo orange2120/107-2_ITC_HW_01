@@ -1,0 +1,1 @@
+./admission student.csv dept.csv output.txt

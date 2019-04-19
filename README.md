@@ -13,3 +13,5 @@
 Using "Exponentiation by Squaring".
 
 ### Part B. Admission List
+
+Create a admission system to simulate university departments admitting students.

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "admissionSys.h"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -9,23 +10,11 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    admissionSys adm;
+
+    adm.readFile(argv[1], argv[2]);
+    adm.admit();
+    adm.writeOutput(argv[3]);
 
     return 0;
-}
-
-class student
-{
-    public:
-    private:
-      int admitted = -1;
-};
-
-void readFile(const string stuPath, const string deptPath)
-{
-    
-}
-
-void writeOutput(const string path)
-{
-
 }
