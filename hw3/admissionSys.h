@@ -1,9 +1,60 @@
+/****************************************************************************
+  FileName     [ admissionSys.h ]
+  PackageName  [ admissionSys ]
+  Synopsis     [ Define member functions of class admissionSys ,student and department ]
+  Author       [ Orange Hsu ]
+  Copyright    [ Copyleft(c) 2019-present , NTU, Taiwan ]
+****************************************************************************/
 #ifndef __ADMISSION_SYS_H__
 #define __ADMISSION_SYS_H__
 
 #include <iostream>
 #include <vector>
+#include <queue>
 using namespace std;
+
+typedef pair<float, uint16_t> PFU;
+#define MP make_pair
+
+class student
+{
+  friend class admissionSys;
+
+  public:
+    student(const uint16_t &i, const uint16_t &s1, const uint16_t &s2, const uint16_t &s3,
+            vector<uint16_t> &v) : id(i), score{s1, s2, s3}, choice(v){};
+    student(){};
+    ~student(){};
+
+    bool isAdmitted() { return admitted; }
+    float getScoreSum(const float *) const;
+
+    friend ostream &operator<<(ostream &, const student &);
+
+  private:
+    bool admitted = false;
+    uint16_t id = 0;
+    uint16_t score[3] = {0};
+    int admittedDept = -1;
+    uint16_t choiceIdx = 0; // current first choice
+    vector<uint16_t> choice;
+};
+
+class department
+{
+  friend class admissionSys;
+  public:
+    department(){};
+    department(const uint16_t &i, const uint16_t &qt, const float &w1,
+      const float &w2, float &w3) : id(i), quota(qt), weight{w1, w2, w3} {};
+    ~department(){};
+
+  private:
+    uint16_t id = 0;
+    uint16_t quota = 0;
+    priority_queue< PFU, vector<PFU>, greater<PFU>> pq;
+    float weight[3] = {0.0};
+};
 
 class admissionSys
 {
@@ -12,50 +63,11 @@ class admissionSys
       ~admissionSys(){};
       void readFile(const string &, const string &);
       void writeOutput(const string &);
-
       void admit();
 
     private:
       vector<student *> stus;
       vector<department *> depts;
-};
-
-class student
-{
-    public:
-      student(vector<uint16_t> &);
-      student(const uint16_t &i, const uint16_t &a, const uint16_t &b, const uint16_t &c,
-       vector<uint16_t> &v) : id(i), g1(a), g2(b), g3(c), depts(v){};
-      student() {};
-      ~student(){};
-
-      void clearScore() { score = 0.0; }
-
-      friend ostream &operator<<(ostream &, const student &);
-
-    private:
-      uint16_t id = 0;
-      uint16_t g1 = 0;
-      uint16_t g2 = 0;
-      uint16_t g3 = 0;
-      int admitted = -1;
-      float score = 0.0;
-      vector<uint16_t> depts;
-};
-
-class department
-{
-    public:
-      department(){};
-      department(const uint16_t &i, const float &w1, const float &w2, float &w3,
-      const uint16_t &ms) : id(i), w1(w1), w2(w2), w3(w3), maxStu(ms) {};
-      ~department(){};
-
-    private:
-      uint16_t id = 0;
-      uint16_t maxStu = 0;
-      float w1, w2, w3;
-      
 };
 
 #endif

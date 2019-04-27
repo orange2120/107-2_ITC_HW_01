@@ -10,7 +10,7 @@
 
 ### Part A. Remainder
 
-Using "Exponentiation by Squaring".
+Using "Modular Exponentiation".
 
 ### Part B. Admission List
 

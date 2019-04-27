@@ -65,7 +65,7 @@ void admissionSys::readFile(const string &stuPath, const string &deptPath)
         line >> tmpF[2];
         line >> tmp[1];
 
-        depts.push_back(new department(tmp[0], tmpF[0], tmpF[1], tmpF[2], tmp[1]));
+        depts.push_back(new department(tmp[0], tmp[1], tmpF[0], tmpF[1], tmpF[2]));
     }
 
     stu.close();
@@ -85,44 +85,106 @@ void admissionSys::writeOutput(const string &path)
         std::cerr << e.what() << '\n';
     }
 
-    for (uint16_t i = 0; i < stus.size(); ++i)
-        ofs << stus[i] << endl;
+    ofs << *stus[0];
+    //ofs << setw(5) << setfill('0') << stus[0]->id << " " << stus[0]->admittedDept;
+    for (uint16_t i = 1; i < stus.size(); ++i)
+        ofs << endl << *stus[i];
+        //ofs << endl << setw(5) << setfill('0') << stus[i]->id << " " << stus[i]->admittedDept;
 
     ofs.close();
 }
 
+/*
 void admissionSys::admit()
 {
+    for (uint32_t i = 0; i < stus.size(); ++i)
+    {
+        uint16_t currDeptId = stus[i]->choice[0];
+        uint16_t currDeptIdx = 0; // the index of department in student's choices
+        float currScore = 0.0;
 
+        while (!stus[i]->isAdmitted()) // the student hasn't be admitted
+        {
+            department *curDep = depts[stus[i]->choice[currDeptIdx]];
+
+            if (currDeptId >= stus[i]->choice.size())
+                break; // flunk
+
+            currScore = stu[i]->getScore()
+            
+            if (curDep->admittedStu.size() < curDep->quota) // current department remain quota
+            {
+                stus[i]->admitted = currDeptId;
+                break;
+            }
+
+            if (curDep->admittedStu.size() == curDep->quota) // the department is full
+            {
+                if (stu[i]->(s))
+
+            }
+
+            currDeptIdx++;
+        }
+    }
+}*/
+
+void admissionSys::admit()
+{
+    for (uint16_t k = 0; k < 10; ++k)
+    {
+        for (uint32_t i = 0; i < stus.size(); ++i)
+        {
+            cout << "S[" << setw(5) << setfill('0') << i << "]--";
+            
+            if (stus[i]->admitted || (stus[i]->choiceIdx >= stus[i]->choice.size()))
+            {
+                cout << "PASS" << endl;
+                continue; // student has been admitted or exceed the max choices size
+            }
+
+            stus[i]->admitted = true;
+            
+            department* currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
+            stus[i]->admittedDept = currDept->id;
+            cout << "C[" << stus[i]->choiceIdx << "]--" << "CID[" << currDept->id << "]" << endl;
+
+            // push score and student ID into department's admitted list
+            currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
+            
+            // the quota of department saturated
+            if (currDept->pq.size() > currDept->quota)
+            {
+                stus[currDept->pq.top().second]->admitted = false;
+                stus[i]->admittedDept = -1;
+                currDept->pq.pop();
+            }
+        }
+    }
+
+    for (uint8_t i = 0; i < depts.size(); ++i)
+    {
+        cout << "D[" << depts[i]->id << "].S.Size: " << depts[i]->pq.size() << endl;
+    }
+
+    uint16_t tot_ad = 0;
+    for (uint32_t i = 0; i < stus.size(); ++i)
+    {
+        if (stus[i]->admittedDept != -1)
+            tot_ad++;
+    }
+    cout << "AD.S: " << tot_ad << endl;
 }
 
 //
 // Member functions of student class
 //
-student::student(vector<uint16_t> &v)
+inline float student::getScoreSum(const float *w) const
 {
-
+    return (score[0] * w[0] + score[1] * w[1] + score[2] * w[2]);
 }
 
 ostream &operator<<(ostream &os, const student &s)
 {
-    return (os << setw(5) << s.id << " " << s.admitted);
+    return (os << setw(5) << setfill('0')<< s.id << " " << s.admittedDept);
 }
-
-// 
-// Member functions of department class
-//
-
-
-/*
-size_t
-myStrGetTok(const string& str, string& tok, size_t pos = 0,
-            const char del = ' ')
-{
-   size_t begin = str.find_first_not_of(del, pos);
-   if (begin == string::npos) { tok = ""; return begin; }
-   size_t end = str.find_first_of(del, begin);
-   tok = str.substr(begin, end - begin);
-   return end;
-}
-*/
