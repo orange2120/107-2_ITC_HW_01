@@ -10,7 +10,7 @@
 
 ### Part A. Remainder
 
-Using "Modular Exponentiation".
+Adopt "Modular Exponentiation".
 
 ### Part B. Admission List
 

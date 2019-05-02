@@ -32,11 +32,13 @@ void admissionSys::readFile(const string &stuPath, const string &deptPath)
         cerr << "Exception opening file\n";
     }
 
+    // read in students information
     while(getline(stu, str, '\n'))
     {
         istringstream line(str);
         vector<uint16_t> stuDept;
-        uint16_t id, g1, g2, g3;
+        uint16_t id;
+        float g1, g2, g3;
         uint16_t tmp = 0;
 
         // read student ID
@@ -53,6 +55,7 @@ void admissionSys::readFile(const string &stuPath, const string &deptPath)
         stus.push_back(new student(id, g1, g2, g3, stuDept));
     }
 
+    // read in departments information
     while(getline(dept, str, '\n'))
     {
         istringstream line(str);
@@ -86,48 +89,11 @@ void admissionSys::writeOutput(const string &path)
     }
 
     ofs << *stus[0];
-    //ofs << setw(5) << setfill('0') << stus[0]->id << " " << stus[0]->admittedDept;
     for (uint16_t i = 1; i < stus.size(); ++i)
         ofs << endl << *stus[i];
-        //ofs << endl << setw(5) << setfill('0') << stus[i]->id << " " << stus[i]->admittedDept;
 
     ofs.close();
 }
-
-/*
-void admissionSys::admit()
-{
-    for (uint32_t i = 0; i < stus.size(); ++i)
-    {
-        uint16_t currDeptId = stus[i]->choice[0];
-        uint16_t currDeptIdx = 0; // the index of department in student's choices
-        float currScore = 0.0;
-
-        while (!stus[i]->isAdmitted()) // the student hasn't be admitted
-        {
-            department *curDep = depts[stus[i]->choice[currDeptIdx]];
-
-            if (currDeptId >= stus[i]->choice.size())
-                break; // flunk
-
-            currScore = stu[i]->getScore()
-            
-            if (curDep->admittedStu.size() < curDep->quota) // current department remain quota
-            {
-                stus[i]->admitted = currDeptId;
-                break;
-            }
-
-            if (curDep->admittedStu.size() == curDep->quota) // the department is full
-            {
-                if (stu[i]->(s))
-
-            }
-
-            currDeptIdx++;
-        }
-    }
-}*/
 
 void admissionSys::admit()
 {
@@ -137,31 +103,34 @@ void admissionSys::admit()
         {
             cout << "S[" << setw(5) << setfill('0') << i << "]--";
             
+            // student has been admitted or exceed the max choices size
             if (stus[i]->admitted || (stus[i]->choiceIdx >= stus[i]->choice.size()))
             {
                 cout << "PASS" << endl;
-                continue; // student has been admitted or exceed the max choices size
+                continue;
             }
 
-            stus[i]->admitted = true;
-            
             department* currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
+            stus[i]->admitted = true; // set student admitted frist
             stus[i]->admittedDept = currDept->id;
+
             cout << "C[" << stus[i]->choiceIdx << "]--" << "CID[" << currDept->id << "]" << endl;
 
             // push score and student ID into department's admitted list
             currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
             
-            // the quota of department saturated
-            if (currDept->pq.size() > currDept->quota)
+            // the quota of the department has saturated
+            if (currDept->full())
             {
+                // set the last student back to unadmitted
                 stus[currDept->pq.top().second]->admitted = false;
-                stus[i]->admittedDept = -1;
+                stus[currDept->pq.top().second]->admittedDept = -1;
                 currDept->pq.pop();
             }
         }
     }
 
+    // for debugging
     for (uint8_t i = 0; i < depts.size(); ++i)
     {
         cout << "D[" << depts[i]->id << "].S.Size: " << depts[i]->pq.size() << endl;
@@ -179,6 +148,7 @@ void admissionSys::admit()
 //
 // Member functions of student class
 //
+// Caculate score by weighted sum of each subject
 inline float student::getScoreSum(const float *w) const
 {
     return (score[0] * w[0] + score[1] * w[1] + score[2] * w[2]);

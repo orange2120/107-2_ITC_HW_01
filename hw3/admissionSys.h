@@ -21,7 +21,7 @@ class student
   friend class admissionSys;
 
   public:
-    student(const uint16_t &i, const uint16_t &s1, const uint16_t &s2, const uint16_t &s3,
+    student(const uint16_t &i, const float &s1, const float &s2, const float &s3,
             vector<uint16_t> &v) : id(i), score{s1, s2, s3}, choice(v){};
     student(){};
     ~student(){};
@@ -34,7 +34,7 @@ class student
   private:
     bool admitted = false;
     uint16_t id = 0;
-    uint16_t score[3] = {0};
+    float score[3] = {0};
     int admittedDept = -1;
     uint16_t choiceIdx = 0; // current first choice
     vector<uint16_t> choice;
@@ -48,6 +48,7 @@ class department
     department(const uint16_t &i, const uint16_t &qt, const float &w1,
       const float &w2, float &w3) : id(i), quota(qt), weight{w1, w2, w3} {};
     ~department(){};
+    bool full() const { return pq.size() > quota; }
 
   private:
     uint16_t id = 0;
