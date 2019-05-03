@@ -97,36 +97,43 @@ void admissionSys::writeOutput(const string &path)
 
 void admissionSys::admit()
 {
-    for (uint16_t k = 0; k < 10; ++k)
+    uint32_t nStus = stus.size();
+    stu_id.reserve(nStus);
+    for (uint32_t i = 0; i < nStus; ++i)
+        stu_id.emplace(stus[i]->id - 1); // add student ID into unordered set
+    
+    while (!stu_id.empty())
     {
-        for (uint32_t i = 0; i < stus.size(); ++i)
+        auto i = *stu_id.begin();
+        cout << "S[" << setw(5) << setfill('0') << i << "]--";
+
+        stu_id.erase(i);
+
+        // student has been admitted or exceed the max choices size
+        if (stus[i]->admitted || (stus[i]->choiceIdx >= stus[i]->choice.size()))
         {
-            cout << "S[" << setw(5) << setfill('0') << i << "]--";
-            
-            // student has been admitted or exceed the max choices size
-            if (stus[i]->admitted || (stus[i]->choiceIdx >= stus[i]->choice.size()))
-            {
-                cout << "PASS" << endl;
-                continue;
-            }
+            cout << "PASS" << endl;
+            continue;
+        }
 
-            department* currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
-            stus[i]->admitted = true; // set student admitted frist
-            stus[i]->admittedDept = currDept->id;
+        department *currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
+        stus[i]->admitted = true;                                                // set student admitted frist
+        stus[i]->admittedDept = currDept->id;
 
-            cout << "C[" << stus[i]->choiceIdx << "]--" << "CID[" << currDept->id << "]" << endl;
+        cout << "C[" << stus[i]->choiceIdx << "]--"
+             << "CID[" << currDept->id << "]" << endl;
 
-            // push score and student ID into department's admitted list
-            currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
-            
-            // the quota of the department has saturated
-            if (currDept->full())
-            {
-                // set the last student back to unadmitted
-                stus[currDept->pq.top().second]->admitted = false;
-                stus[currDept->pq.top().second]->admittedDept = -1;
-                currDept->pq.pop();
-            }
+        // push score and student ID into department's admitted list
+        currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
+
+        // the quota of the department has saturated
+        if (currDept->full())
+        {
+            // set the last student back to unadmitted
+            stus[currDept->pq.top().second]->admitted = false;
+            stus[currDept->pq.top().second]->admittedDept = -1;
+            stu_id.insert(currDept->pq.top().second);
+            currDept->pq.pop();   
         }
     }
 

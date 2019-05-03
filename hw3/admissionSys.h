@@ -11,6 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <unordered_set>
 using namespace std;
 
 typedef pair<float, uint16_t> PFU;
@@ -69,6 +70,7 @@ class admissionSys
     private:
       vector<student *> stus;
       vector<department *> depts;
+      unordered_set<uint16_t> stu_id;
 };
 
 #endif
