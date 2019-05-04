@@ -105,7 +105,7 @@ void admissionSys::admit()
     while (!stu_id.empty())
     {
         auto i = *stu_id.begin();
-        cout << "S[" << setw(5) << setfill('0') << i << "]--";
+        cout << "S[" << setw(5) << setfill('0') << i + 1 << "]--";
 
         stu_id.erase(i);
 
@@ -116,24 +116,27 @@ void admissionSys::admit()
             continue;
         }
 
+        cout << "C[" << stus[i]->choiceIdx << "]--";
+
         department *currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
-        stus[i]->admitted = true;                                                // set student admitted frist
+        stus[i]->admitted = true;                                                // set student admitted at frist
         stus[i]->admittedDept = currDept->id;
 
-        cout << "C[" << stus[i]->choiceIdx << "]--"
-             << "CID[" << currDept->id << "]" << endl;
+        
+        cout << "CID[" << currDept->id << "]" << endl;
 
         // push score and student ID into department's admitted list
         currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
 
-        // the quota of the department has saturated
+        // the quota of the department has ran out
         if (currDept->full())
         {
-            // set the last student back to unadmitted
+            cout << "DROP[" << currDept->pq.top().second + 1 <<  "]" << endl;
+            // set the last (the lowest score) student back to unadmitted, and pop out
             stus[currDept->pq.top().second]->admitted = false;
             stus[currDept->pq.top().second]->admittedDept = -1;
             stu_id.insert(currDept->pq.top().second);
-            currDept->pq.pop();   
+            currDept->pq.pop();
         }
     }
 
@@ -149,7 +152,8 @@ void admissionSys::admit()
         if (stus[i]->admittedDept != -1)
             tot_ad++;
     }
-    cout << "AD.S: " << tot_ad << endl;
+    cout << "TOT.AD.S: " << tot_ad << endl;
+    
 }
 
 //

@@ -70,7 +70,7 @@ class admissionSys
     private:
       vector<student *> stus;
       vector<department *> depts;
-      unordered_set<uint16_t> stu_id;
+      unordered_set<uint16_t> stu_id; // store unadmitted students' ID
 };
 
 #endif
