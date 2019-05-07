@@ -16,5 +16,12 @@ int main(int argc, char *argv[])
     adm.admit();
     adm.writeOutput(argv[3]);
 
+    #ifdef DEBUG
+        if (adm.verify())
+            std::cerr << "Verification done, no error occurred\n";
+        else
+            std::cerr << "Wrong answer\n";
+    #endif
+
     return 0;
 }

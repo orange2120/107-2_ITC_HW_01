@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     while(N > 0)
     {
-        if (N & 1)
+        if (N & 1) // exponent is odd
             result = (result * k) % m;
         N >>= 1;
         k = (k * k) % m;

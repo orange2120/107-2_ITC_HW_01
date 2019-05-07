@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <cassert>
 #include "admissionSys.h"
 using namespace std;
 
@@ -105,25 +106,28 @@ void admissionSys::admit()
     while (!stu_id.empty())
     {
         auto i = *stu_id.begin();
-        cout << "S[" << setw(5) << setfill('0') << i + 1 << "]--";
-
         stu_id.erase(i);
 
         // student has been admitted or exceed the max choices size
         if (stus[i]->admitted || (stus[i]->choiceIdx >= stus[i]->choice.size()))
         {
+            #ifdef DEBUG
             cout << "PASS" << endl;
+            #endif
             continue;
         }
 
-        cout << "C[" << stus[i]->choiceIdx << "]--";
+        #ifdef DEBUG
+            cout << "S[" << setw(5) << setfill('0') << i + 1 << "]--C[" << stus[i]->choiceIdx << "]--";
+        #endif
 
         department *currDept = depts[stus[i]->choice[stus[i]->choiceIdx++] - 1]; // get current department from student's choice list
         stus[i]->admitted = true;                                                // set student admitted at frist
         stus[i]->admittedDept = currDept->id;
 
-        
+        #ifdef DEBUG
         cout << "CID[" << currDept->id << "]" << endl;
+        #endif
 
         // push score and student ID into department's admitted list
         currDept->pq.push(MP(stus[i]->getScoreSum(currDept->weight), stus[i]->id - 1));
@@ -131,7 +135,6 @@ void admissionSys::admit()
         // the quota of the department has ran out
         if (currDept->full())
         {
-            cout << "DROP[" << currDept->pq.top().second + 1 <<  "]" << endl;
             // set the last (the lowest score) student back to unadmitted, and pop out
             stus[currDept->pq.top().second]->admitted = false;
             stus[currDept->pq.top().second]->admittedDept = -1;
@@ -140,20 +143,54 @@ void admissionSys::admit()
         }
     }
 
-    // for debugging
-    for (uint8_t i = 0; i < depts.size(); ++i)
-    {
-        cout << "D[" << depts[i]->id << "].S.Size: " << depts[i]->pq.size() << endl;
-    }
+    #ifdef DEBUG
+        // for debugging
+        for (uint8_t i = 0; i < depts.size(); ++i)
+        {
+            cout << "D[" << depts[i]->id << "].S.Size: " << depts[i]->pq.size() << endl;
+        }
 
-    uint16_t tot_ad = 0;
-    for (uint32_t i = 0; i < stus.size(); ++i)
-    {
-        if (stus[i]->admittedDept != -1)
-            tot_ad++;
-    }
-    cout << "TOT.AD.S: " << tot_ad << endl;
+        uint16_t tot_ad = 0;
+        for (uint32_t i = 0; i < stus.size(); ++i)
+        {
+            if (stus[i]->admittedDept != -1)
+                tot_ad++;
+        }
+        cout << "TOT.AD.S: " << tot_ad << endl;
+    #endif
     
+}
+
+bool admissionSys::verify() const
+{
+    bool correct = true;
+    for (const auto &student : stus)
+    {
+        uint16_t idx = 0;
+        if(!student->admitted) {
+            idx = depts.size();
+        }
+        else{
+            for (; ; ++idx){
+                if(student->choice[idx] == student->admittedDept)
+                    break;
+            }
+        }
+        for (uint16_t i = 0, totalDepts = depts.size(); i < idx && i < totalDepts; ++i)
+        {
+            if(student->admitted)
+                assert(depts[student->choice[idx] - 1]->id == student->admittedDept);
+            auto currentDep = depts[student->choice[i] - 1];
+            float minScore = stus[currentDep->pq.top().second]->getScoreSum(currentDep->weight),
+                  currentScore = student->getScoreSum(currentDep->weight);
+            if (minScore < currentScore)
+            {
+                std::cerr << "Department[" << (currentDep->id - 1) << "] have a min score of " << minScore << ", but student[" << (student->id - 1) << "] has a higher score of " << currentScore << '\n';
+                correct = false;
+            }
+            }
+    }
+    return correct;
 }
 
 //

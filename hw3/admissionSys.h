@@ -8,6 +8,8 @@
 #ifndef __ADMISSION_SYS_H__
 #define __ADMISSION_SYS_H__
 
+//#define DEBUG
+
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -66,6 +68,7 @@ class admissionSys
       void readFile(const string &, const string &);
       void writeOutput(const string &);
       void admit();
+      bool verify() const;
 
     private:
       vector<student *> stus;
