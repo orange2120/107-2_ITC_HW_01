@@ -1,0 +1,3 @@
+SELECT Name FROM EMPLOYEE
+WHERE Address LIKE '%Broadway%'
+ORDER BY Name
