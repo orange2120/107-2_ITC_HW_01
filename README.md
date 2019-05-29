@@ -19,3 +19,7 @@ Create a admission system to simulate university departments admitting students.
 ## HW4 SQL in Practice
 
 Learning how to query a SQLite database by using the SQL language.
+
+## HW5 DNN
+
+ Implementsome DNN models with Keras
