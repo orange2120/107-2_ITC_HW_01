@@ -1,5 +1,6 @@
 ./hw2/
 hw5/data/*
+*pycache*
 
 .vscode/
 

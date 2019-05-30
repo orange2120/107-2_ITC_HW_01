@@ -34,8 +34,12 @@ def load_data():
 if __name__ == '__main__':
 	x_train, y_train, x_test = load_data()
 
+	print(len(x_train))
+	print(len(y_train))
+
 	# build model
 	model = Sequential()
+	model.add(Dense())
 	
 	# Do not modify code before this line
 	# TODO: build your network.
