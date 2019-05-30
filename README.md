@@ -22,4 +22,9 @@ Learning how to query a SQLite database by using the SQL language.
 
 ## HW5 DNN
 
- Implementsome DNN models with Keras
+Implementsome DNN models with Keras.
+Learning how to do classification with Neural Network .
+
+### Bonus
+
+Implement a model with convolutional neural network (CNN).
