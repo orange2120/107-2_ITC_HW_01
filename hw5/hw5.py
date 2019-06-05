@@ -19,46 +19,49 @@ output_file = sys.argv[2]
 
 
 def load_data():
-	# load fashion mnist data
-	x_train, y_train = load_fashion_mnist(data_dir, kind='train')
-	x_test, _ = load_fashion_mnist(data_dir, kind='t10k')
+    # load fashion mnist data
+    x_train, y_train = load_fashion_mnist(data_dir, kind='train')
+    x_test, _ = load_fashion_mnist(data_dir, kind='t10k')
 
-	# preprocess data, let pixel between 0~1
-	x_train = x_train.astype('float32')/255
-	y_train = np_utils.to_categorical(y_train, num_classes)
+    # preprocess data, let pixel between 0~1
+    x_train = x_train.astype('float32')/255
+    y_train = np_utils.to_categorical(y_train, num_classes)
 
-	x_test = x_test.astype('float32')/255
+    x_test = x_test.astype('float32')/255
 
-	return x_train, y_train, x_test
+    return x_train, y_train, x_test
 
 if __name__ == '__main__':
-	x_train, y_train, x_test = load_data()
+    x_train, y_train, x_test = load_data()
 
-	print(len(x_train))
-	print(len(y_train))
+    print(len(x_train))
+    print(len(y_train))
 
-	# build model
-	model = Sequential()
-	model.add(Dense())
-	
-	# Do not modify code before this line
-	# TODO: build your network.
+    # build model
+    model = Sequential()
 
+    # Do not modify code before this line
+    # TODO: build your network.
+    model.add(Dense(32, input_dim=784, activation='relu'))
+    model.add(Dense(10, activation='softmax'))
 
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-	# Do not modify code after this line
-	# output model
-	model.summary()
-	
-	# output train score and test file
-	score = model.evaluate(x_train, y_train)
-	print('\nTrain Acc:', score[1])
-	y_pred = model.predict(x_test)
-	result = np.argmax(y_pred, 1)
+    model.fit(x_train, y_train, epochs=5, batch_size=10)
 
-	f = open(output_file, 'w')
-	writer = csv.writer(f)
-	writer.writerow(['id', 'label'])
-	for i in range(x_test.shape[0]):
-		writer.writerow([str(i), int(result[i])])
-	f.close()
+    # Do not modify code after this line
+    # output model
+    model.summary()
+    
+    # output train score and test file
+    score = model.evaluate(x_train, y_train)
+    print('\nTrain Acc:', score[1])
+    y_pred = model.predict(x_test)
+    result = np.argmax(y_pred, 1)
+
+    f = open(output_file, 'w')
+    writer = csv.writer(f)
+    writer.writerow(['id', 'label'])
+    for i in range(x_test.shape[0]):
+        writer.writerow([str(i), int(result[i])])
+    f.close()
