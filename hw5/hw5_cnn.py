@@ -44,17 +44,26 @@ if __name__ == '__main__':
     
     # Do not modify code before this line
     # TODO: build your network.
-    model.add(Conv2D(filter=16, kernel_size(5,5),
-        padding='same', input_shape(28, 28, 1),
+    model.add(Conv2D(filters=32, kernel_size=(16,16),
+        padding='same', input_shape=(28, 28, 1),
         activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(0.25))
+    #model.add(Dropout(0.25))
+    
+    model.add(Conv2D(filters=64, kernel_size=(16,16),
+        padding='same', activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dense(32, input_dim=784, activation='relu'))
+    #model.add(Dropout(0.25))
+    
+    model.add(Flatten())
+    model.add(Dense(512, input_dim=784, activation='relu'))
+    model.add(Dense(1024, activation='relu'))
     model.add(Dense(10, activation='softmax'))
 
-
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    model.fit(x_train, y_train, epochs=50, batch_size=100, validation_split=0.2)
 
     # Do not modify code after this line
     # output model

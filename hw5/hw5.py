@@ -42,12 +42,18 @@ if __name__ == '__main__':
 
     # Do not modify code before this line
     # TODO: build your network.
-    model.add(Dense(32, input_dim=784, activation='relu'))
+    model.add(Dense(512, input_dim=784, activation='relu'))
+    #model.add(Dropout(0.2))
+    model.add(Dense(1024, activation='relu'))
+    #model.add(Dropout(0.2))
+    model.add(Dense(1024, activation='relu'))
+    #model.add(Dropout(0.2))
     model.add(Dense(10, activation='softmax'))
+    
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    model.fit(x_train, y_train, epochs=5, batch_size=10)
+    model.fit(x_train, y_train, epochs=50, validation_split=0.2, batch_size=50)
 
     # Do not modify code after this line
     # output model
