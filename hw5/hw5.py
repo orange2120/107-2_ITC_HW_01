@@ -42,12 +42,12 @@ if __name__ == '__main__':
 
     # Do not modify code before this line
     # TODO: build your network.
-    model.add(Dense(512, input_dim=784, activation='relu'))
+    model.add(Dense(1024, input_dim=784, activation='relu'))
     #model.add(Dropout(0.2))
     model.add(Dense(1024, activation='relu'))
-    #model.add(Dropout(0.2))
-    model.add(Dense(1024, activation='relu'))
-    #model.add(Dropout(0.2))
+    model.add(Dropout(0.2))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(0.2))
     model.add(Dense(10, activation='softmax'))
     
 

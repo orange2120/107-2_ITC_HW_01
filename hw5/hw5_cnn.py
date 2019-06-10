@@ -49,21 +49,21 @@ if __name__ == '__main__':
         activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    #model.add(Dropout(0.25))
+    model.add(Dropout(0.2))
     
     model.add(Conv2D(filters=64, kernel_size=(16,16),
         padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    #model.add(Dropout(0.25))
+    model.add(Dropout(0.2))
     
     model.add(Flatten())
-    model.add(Dense(512, input_dim=784, activation='relu'))
-    model.add(Dense(1024, activation='relu'))
+    model.add(Dense(1024, input_dim=784, activation='relu'))
+    model.add(Dense(512, activation='relu'))
     model.add(Dense(10, activation='softmax'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(x_train, y_train, epochs=50, batch_size=100, validation_split=0.2)
+    model.fit(x_train, y_train, epochs=50, batch_size=128, validation_split=0.2)
 
     # Do not modify code after this line
     # output model
