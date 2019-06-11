@@ -27,4 +27,4 @@ Learning how to do classification with Neural Network .
 
 ### Bonus
 
-Implement a model with convolutional neural network (CNN).
+Implement a model with Convolutional Neural Network (CNN).

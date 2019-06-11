@@ -5,12 +5,14 @@ import sys
 import csv
 from reader import load_fashion_mnist
 
-from keras.models import Sequential
+from keras.callbacks import ModelCheckpoint
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
 from keras.callbacks import EarlyStopping
+from keras.layers.normalization import BatchNormalization
 
 num_classes = 10
 img_size = 28 # mnist size = 28*28
@@ -44,27 +46,48 @@ if __name__ == '__main__':
     
     # Do not modify code before this line
     # TODO: build your network.
-    model.add(Conv2D(filters=32, kernel_size=(16,16),
+    
+    # Convolution layer 1
+    model.add(Conv2D(filters=32, kernel_size=(3,3),
         padding='same', input_shape=(28, 28, 1),
         activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-
-    model.add(Dropout(0.2))
+    model.add(BatchNormalization())
     
-    model.add(Conv2D(filters=64, kernel_size=(16,16),
+    model.add(Conv2D(filters=64, kernel_size=(3,3),
         padding='same', activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    
+    # Convolution layer 2
+    model.add(Conv2D(filters=64, kernel_size=(3,3),
+        padding='same', activation='relu'))
+    model.add(BatchNormalization())
+    
+    model.add(Conv2D(filters=128, kernel_size=(3,3),
+        padding='same', activation='relu'))
+    model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(0.2))
-    
+    model.add(Dropout(0.3))
+   
+    # Flatten layer
     model.add(Flatten())
-    model.add(Dense(1024, input_dim=784, activation='relu'))
+    model.add(Dense(512, input_dim=784, activation='relu'))
+    #model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    # Hidden layer 1 
     model.add(Dense(512, activation='relu'))
+    #model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+    # Output layer
     model.add(Dense(10, activation='softmax'))
-
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-    model.fit(x_train, y_train, epochs=50, batch_size=128, validation_split=0.2)
-
+    
+    checkpoint = ModelCheckpoint('best.h5', monitor = 'val_acc', verbose = 1, save_best_only = True, mode = 'max')
+    opt = Adam(lr=5e-4)
+    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
+    model.fit(x_train, y_train, epochs=30, batch_size=128, validation_split=0.1, verbose=1, callbacks = [checkpoint])
+    model = load_model('best.h5')
+    
     # Do not modify code after this line
     # output model
     model.summary()
