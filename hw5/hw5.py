@@ -5,12 +5,11 @@ import sys
 import csv
 from reader import load_fashion_mnist
 
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
-from keras.callbacks import EarlyStopping
 from keras.layers.normalization import BatchNormalization
 
 num_classes = 10
@@ -46,21 +45,19 @@ if __name__ == '__main__':
     # TODO: build your network.
     model.add(Dense(1024, input_dim=784, activation='relu'))
     
-    #model.add(Dropout(0.2))
+    model.add(Dropout(0.2))
     model.add(Dense(1024, activation='relu'))
-    #model.add(BatchNormalization())
     model.add(Dropout(0.2))
     model.add(Dense(512, activation='relu'))
-    #model.add(BatchNormalization())
     model.add(Dropout(0.2))
     model.add(Dense(10, activation='softmax'))
     
-    checkpoint = ModelCheckpoint('dnn_best.h5', monitor = 'val_acc', verbose = 1, save_best_only = True, mode = 'max')
+    checkpoint = ModelCheckpoint('best_dnn.h5', monitor = 'val_acc', verbose = 1, save_best_only = True, mode = 'max')
     opt = Adam(lr=5e-4)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     model.fit(x_train, y_train, epochs=50, validation_split=0.1, batch_size=128, verbose=1, callbacks = [checkpoint])
-    model = load_model('dnn_best.h5')
+    model = load_model('best_dnn.h5')
 
     # Do not modify code after this line
     # output model

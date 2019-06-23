@@ -5,13 +5,12 @@ import sys
 import csv
 from reader import load_fashion_mnist
 
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Activation
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from keras.optimizers import SGD, Adam
 from keras.utils import np_utils
-from keras.callbacks import EarlyStopping
 from keras.layers.normalization import BatchNormalization
 
 num_classes = 10
@@ -68,7 +67,7 @@ if __name__ == '__main__':
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.5))
    
     # Flatten layer
     model.add(Flatten())
@@ -82,11 +81,11 @@ if __name__ == '__main__':
     # Output layer
     model.add(Dense(10, activation='softmax'))
     
-    checkpoint = ModelCheckpoint('best.h5', monitor = 'val_acc', verbose = 1, save_best_only = True, mode = 'max')
+    checkpoint = ModelCheckpoint('best_cnn.h5', monitor = 'val_acc', verbose = 1, save_best_only = True, mode = 'max')
     opt = Adam(lr=5e-4)
     model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
     model.fit(x_train, y_train, epochs=30, batch_size=128, validation_split=0.1, verbose=1, callbacks = [checkpoint])
-    model = load_model('best.h5')
+    model = load_model('best_cnn.h5')
     
     # Do not modify code after this line
     # output model
